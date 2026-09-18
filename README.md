@@ -20,3 +20,8 @@ Demonstrar conceitos de Controle de Versão utilizando Git e GitHub.
 - Release
 - Configuration Control
 - System Building
+
+## Política de Branches
+
+Novas funcionalidades são desenvolvidas em branches do tipo `feature/*`.
+Após serem concluídas e testadas, podem ser integradas à branch `main`.
