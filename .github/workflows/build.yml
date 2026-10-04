@@ -1,0 +1,33 @@
+name: Build Java - GC Entrega 2
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar código do repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Java 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Executar testes JUnit
+        run: mvn -f app/pom.xml test
+
+      - name: Gerar build
+        run: mvn -f app/pom.xml package
+
+      - name: Gerar Javadoc
+        run: mvn -f app/pom.xml javadoc:javadoc
