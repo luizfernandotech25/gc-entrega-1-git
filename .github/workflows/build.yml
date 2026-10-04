@@ -8,13 +8,18 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Baixar código do repositório
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Configurar Java 17
         uses: actions/setup-java@v5
@@ -31,3 +36,11 @@ jobs:
 
       - name: Gerar Javadoc
         run: mvn -f app/pom.xml javadoc:javadoc
+
+      - name: Configurar GitHub Pages
+        uses: actions/configure-pages@v6
+
+      - name: Publicar artefato do Javadoc
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: app/target/reports/apidocs
