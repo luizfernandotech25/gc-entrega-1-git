@@ -37,13 +37,39 @@ jobs:
       - name: Gerar Javadoc
         run: mvn -f app/pom.xml javadoc:javadoc
 
+      - name: Gerar relatório HTML dos testes
+        run: mvn -f app/pom.xml surefire-report:report
+
       - name: Configurar GitHub Pages
         uses: actions/configure-pages@v6
 
-      - name: Publicar artefato do Javadoc
+      - name: Preparar site para publicação
+        run: |
+          mkdir -p app/target/site/apidocs app/target/site/testes
+          cp -a app/target/reports/apidocs/. app/target/site/apidocs/
+          cp app/target/reports/surefire.html app/target/site/testes/surefire.html
+          cat > app/target/site/index.html <<'EOF'
+          <!DOCTYPE html>
+          <html lang="pt-BR">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Entrega 2 — Gerência de Configuração</title>
+          </head>
+          <body>
+            <h1>Gerência de Configuração — Entrega 2</h1>
+            <h2>Documentação Javadoc</h2>
+            <p><a href="apidocs/index.html">Consultar documentação Java</a></p>
+            <h2>Relatório dos testes JUnit</h2>
+            <p><a href="testes/surefire.html">Consultar relatório dos testes</a></p>
+          </body>
+          </html>
+          EOF
+
+      - name: Publicar artefato do site
         uses: actions/upload-pages-artifact@v5
         with:
-          path: app/target/reports/apidocs
+          path: app/target/site
 
   deploy:
     needs: build
